@@ -25,3 +25,19 @@ str(lobster_traps)
 colnames(lobster_traps)
 ```
 
+# Conver -9999 to NA
+```{r}
+lobster_traps<- lobster_traps %>% mutate(TRAPS= na_if(TRAPS,-99999))
+```
+# Filter out NAPL site
+```{r}
+lobster_traps_filtered<- lobster_traps%>% filter(SITE != "NAPL")
+
+```
+# Create and store a subset with lobsters at Carpinteria Reef (CARP) OR number of commercial trap floats is greater than 20. Check your output.
+
+```{r}
+lobsters_trap_subset<- lobster_traps_filtered %>% filter(SITE=="CARP"|TRAPS>20)
+```
+
+
