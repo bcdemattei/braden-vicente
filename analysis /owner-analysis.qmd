@@ -1,5 +1,39 @@
 ---
 title: "owner"
 format: html
-editor: visual
+author: "Braden Charles DeMattei"
 ---
+
+## Setup
+```{r}
+#|message: false
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+```
+
+## Read Data
+```{r}
+#| message: false
+
+lobster_abundance <- read_csv("../data/Lobster_Abundance_All_Years_20220829.csv")
+
+```
+
+```{r}
+#| eval: false
+
+colnames(lobster_abundance)
+str(lobster_abundance)
+glimpse(lobster_abundance)
+summary(lobster_abundance)
+```
+
+
+
+
+
+
+
