@@ -12,6 +12,7 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
+library(janitor)
 ```
 
 ## Read Data
@@ -29,6 +30,22 @@ colnames(lobster_abundance)
 str(lobster_abundance)
 glimpse(lobster_abundance)
 summary(lobster_abundance)
+```
+
+## Cleaning data
+```{r}
+lobster_clean <- lobster_abundance %>% 
+  mutate(SIZE_MM = na_if(SIZE_MM, -99999)) %>%
+  clean_names()
+```
+
+## Subsetting data using `filter()`
+```{r}
+not_napl <- lobster_clean %>% 
+  filter(site != "NAPL")
+
+aque_70mm <- lobster_clean %>% 
+  filter(site == "AQUE" | size_mm > 70)
 ```
 
 
