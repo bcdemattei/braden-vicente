@@ -60,6 +60,7 @@ lobster_traps_summarize<- lobster_traps %>% group_by(SITE,YEAR) %>%
   labs(title= "Total traps by year",x="Year", y="Total traps", colour="Site")+
   theme_classic()
 lobster_traps_summarize
+ggsave("../figs/site_traps_year.png", width = 12, height=6, unit="in")
 
 ```
 
@@ -72,7 +73,7 @@ lobster_traps_withpoint<- lobster_traps %>% group_by(SITE,YEAR) %>%
   scale_x_continuous(breaks=seq(2012,2022, 1))
   theme_classic()
 lobster_traps_withpoint
-ggsave("")
+ggsave("../figs/site_traps_year_point.png", width = 12, height=6, unit="in")
 ```
 
 # new table with filters
@@ -80,5 +81,6 @@ ggsave("")
 lobster_traps_fishing_pressure<- lobster_traps %>% filter(YEAR %in% c(2019, 2020,2021)) %>%  mutate(FISHING_PRESSURE= if_else(TRAPS>=8,"HIGH",'LOW')) %>% 
   group_by(FISHING_PRESSURE) %>% summarize(PRESSURE=n()) %>% drop_na()
 ggplot(lobster_traps_fishing_pressure,aes(x=FISHING_PRESSURE,y=PRESSURE, fill = FISHING_PRESSURE))+geom_col(position = 'dodge')+labs(title="Fishing pressure",subtitle = "count", x="Fishing pressure")
+ggsave("../figs/site_traps_year_fishingpressure.png", width = 12, height=6, unit="in")
 ```
 
