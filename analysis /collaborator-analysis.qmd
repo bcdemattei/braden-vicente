@@ -40,4 +40,45 @@ lobster_traps_filtered<- lobster_traps%>% filter(SITE != "NAPL")
 lobsters_trap_subset<- lobster_traps_filtered %>% filter(SITE=="CARP"|TRAPS>20)
 ```
 
+## Create a multi-panel plot of lobster commercial traps (TRAPS) grouped by year, using ggplot(), geom_histogram(), and facet_wrap(). Use the variable YEAR in facet_wrap(). Use the object lobster_traps.
+```{r}
+#| warning: false
+#| message: false
+ggplot(lobster_traps,aes(x=TRAPS))+geom_histogram()+facet_wrap(~YEAR)
+```
+
+# clean site inconsistency
+```{r}
+lobster_traps<- lobster_traps %>% mutate(SITE= tolower(SITE)) %>% mutate(SITE=toupper(SITE))
+```
+
+### summary
+```{r}
+lobster_traps_summarize<- lobster_traps %>% group_by(SITE,YEAR) %>% 
+  summarize(TOTAL_TRAPS= sum(TRAPS, na.rm=TRUE)) %>% 
+  ggplot(aes(x=YEAR, y=TOTAL_TRAPS, colour=SITE))+geom_line()+
+  labs(title= "Total traps by year",x="Year", y="Total traps", colour="Site")+
+  theme_classic()
+lobster_traps_summarize
+
+```
+
+### with points
+```{r}
+lobster_traps_withpoint<- lobster_traps %>% group_by(SITE,YEAR) %>% 
+  summarize(TOTAL_TRAPS= sum(TRAPS, na.rm=TRUE)) %>% 
+  ggplot(aes(x=YEAR, y=TOTAL_TRAPS, color=SITE))+geom_line()+geom_point()+
+  labs(title= "Total traps by year",x="Year", y="Total traps", colour="Site")+
+  scale_x_continuous(breaks=seq(2012,2022, 1))
+  theme_classic()
+lobster_traps_withpoint
+ggsave("")
+```
+
+# new table with filters
+```{r}
+lobster_traps_fishing_pressure<- lobster_traps %>% filter(YEAR %in% c(2019, 2020,2021)) %>%  mutate(FISHING_PRESSURE= if_else(TRAPS>=8,"HIGH",'LOW')) %>% 
+  group_by(FISHING_PRESSURE) %>% summarize(PRESSURE=n()) %>% drop_na()
+ggplot(lobster_traps_fishing_pressure,aes(x=FISHING_PRESSURE,y=PRESSURE, fill = FISHING_PRESSURE))+geom_col(position = 'dodge')+labs(title="Fishing pressure",subtitle = "count", x="Fishing pressure")
+```
 
