@@ -3,4 +3,4 @@ title: "index"
 format: html
 ---
 
-Look at this cool [report](../analysis/lobster-report.html)
+Look at this cool [report](analysis/lobster-report.html)
