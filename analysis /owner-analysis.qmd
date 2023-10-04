@@ -15,7 +15,9 @@ library(tidyr)
 library(janitor)
 ```
 
-## Read Data
+## Exploring Data
+
+### Read Data
 ```{r}
 #| message: false
 
@@ -32,25 +34,79 @@ glimpse(lobster_abundance)
 summary(lobster_abundance)
 ```
 
-## Cleaning data
+### Cleaning data
+
+Question 1:
 ```{r}
-lobster_clean <- lobster_abundance %>% 
-  mutate(SIZE_MM = na_if(SIZE_MM, -99999)) %>%
-  clean_names()
+lobster_abundance <- lobster_abundance %>% 
+    mutate(SIZE_MM = na_if(SIZE_MM, -99999))
 ```
 
-## Subsetting data using `filter()`
-```{r}
-not_napl <- lobster_clean %>% 
-  filter(site != "NAPL")
+### Subsetting data using `filter()`
 
-aque_70mm <- lobster_clean %>% 
-  filter(site == "AQUE" | size_mm > 70)
+Question 2 & 3:
+```{r}
+not_napl <- lobster_abundance %>% 
+  filter(SITE != "NAPL")
+
+aque_70mm <- lobster_abundance %>% 
+  filter(SITE == "AQUE", SIZE_MM > 70)
 ```
 
 
+## Exercise: Data Visualization
+
+Question 7:
+```{r}
+lobs1 <- ggplot(data = lobster_abundance, aes(x = SIZE_MM)) +
+    geom_histogram() +
+    facet_wrap(~SITE) + 
+  labs(x = "Carapace Size (mm)", y = "Count", title = "Distribution of Sizes per Site") +
+  theme_minimal()
+```
+
+Question 8:
+```{r}
+lobster_summarized <- lobster_abundance %>%
+  group_by(SITE, YEAR) %>%
+  summarize(COUNT = n())
+
+lobs2 <- ggplot(lobster_summarized, aes(y = COUNT, x = YEAR)) +
+  geom_line(aes(color = SITE))+
+  geom_point(aes(color = SITE)) +
+  labs(y = "Count", x = "Year", color = "Site", 
+       title = "Lobster Catch", subtitle = "2012 to 2022") +
+  theme_minimal()
+```
+
+Question 9:
+```{r}
+lobster_size_lrg <- lobster_abundance %>% 
+  filter(YEAR %in% c(2019, 2020, 2021)) %>%
+  mutate(SIZE_BIN = if_else(condition = SIZE_MM > 70, 
+                            true = "large",
+                            false = "small")) %>% 
+  group_by(SITE, SIZE_BIN) %>%
+  summarize(COUNT = n()) %>% 
+  drop_na()
+```
 
 
+Bar plot
+```{r}
+lobs3 <- ggplot(lobster_size_lrg, aes(x = SITE, y = COUNT, fill = SIZE_BIN))+
+  geom_col(position = "dodge") + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,1000)) +
+  labs(x = "Site", y = "Count of Lobsters", 
+       title = "Lobster Catch", fill = "Size Category")+
+  theme_minimal()
+  
+```
 
 
+```{r}
+ggsave("../figs/lobster_size_distribution_per_site.png", plot = lobs1, width = 12, height = 6, units = "in")
+ggsave("../figs/lobster_catch_per_year-line.png", plot = lobs2, width = 12, height = 6, units = "in")
+ggsave("../figs/count-lobsters-size-cat.png", plot = lobs3, width = 12, height = 6, units = "in")
+```
 
