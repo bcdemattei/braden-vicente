@@ -8,3 +8,47 @@ bibliography: references.bib
 # Citation of the data
 
 The lobster data is available at [the dataset](@lter2022)
+
+# Abstract of the data
+
+The authors describe the dataset as Data on abundance, size and fishing pressure of California spiny lobster (Panulirus interruptus) are collected along the mainland coast of the Santa Barbara Channel[@lter2022]
+
+#Plots
+```{r}
+#|message: false
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(janitor)
+```
+```{r}
+#| message: false
+
+lobster_abundance <- read_csv("../data/Lobster_Abundance_All_Years_20220829.csv")
+lobster_abundance <- lobster_abundance %>% 
+    mutate(SIZE_MM = na_if(SIZE_MM, -99999))
+```
+```{r}
+lobster_size_lrg <- lobster_abundance %>% 
+  filter(YEAR %in% c(2019, 2020, 2021)) %>%
+  mutate(SIZE_BIN = if_else(condition = SIZE_MM > 70, 
+                            true = "large",
+                            false = "small")) %>% 
+  group_by(SITE, SIZE_BIN) %>%
+  summarize(COUNT = n()) %>% 
+  drop_na()
+```
+
+```{r}
+#| echo: false
+lobs3 <- ggplot(lobster_size_lrg, aes(x = SITE, y = COUNT, fill = SIZE_BIN))+
+  geom_col(position = "dodge") + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,1000)) +
+  labs(x = "Site", y = "Count of Lobsters", 
+       title = "Lobster Catch", fill = "Size Category")+
+  theme_minimal()
+lobs3
+  
+```
