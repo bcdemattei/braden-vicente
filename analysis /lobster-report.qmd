@@ -2,4 +2,9 @@
 title: "lobster file"
 format: html
 editor: visual
+bibliography: references.bib
 ---
+
+# Citation of the data
+
+The lobster data is available at [the dataset](@lter2022)
