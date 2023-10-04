@@ -1,0 +1,16 @@
+---
+title: "colaborator"
+format: html
+editor: visual
+---
+# Set up
+```{r}
+#| warning: false
+#| message: false
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+```
+
+
